@@ -5,7 +5,11 @@
 #include <map>
 #include <string>
 
-using TokenMap = std::map<std::string, std::string>
+// user includes
+#include "connector.h"
+#include "executable.h"
+
+using StringVec = std::vector<char*>;
 
 class Input
 {
@@ -13,14 +17,20 @@ public:
     Input();
     ~Input();
 
-    std::string getInput();
+    void getInput();
+    bool run(); // runs the command as per input
 
 private:
-    void tokenize();
+    void tokenize(std::string input);
+    void initializeCommands();
 
 protected:
-    TokenMap tokens;
+    StringVec tokens;
 
+    bool singleCommand;
+    
+    std::vector<Connector*> connectors;
+    std::vector<Executable*> executables;
 };
 
 #endif

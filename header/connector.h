@@ -8,12 +8,14 @@ class Connector
     : public Command
 {
 public: 
-    Connector();
+    Connector(Command* left, Command* right);
     ~Connector();
 
     void execute() override;
 
 protected:
+    std::string connectorValue;
+
     Command* lhs;
     Command* rhs;
 };

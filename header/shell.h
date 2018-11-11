@@ -26,7 +26,6 @@ private: // private members
 
     State state;
     Input* userInput; 
-    Command* cmd;
 };
 
 #endif

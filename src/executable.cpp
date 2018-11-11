@@ -1,6 +1,7 @@
 #include "header/executable.h"
 
-Executable::Executable()
+Executable::Executable(StringVec args)
+    : argList{args}
 {}
 
 Executable::~Executable()
