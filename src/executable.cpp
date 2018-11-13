@@ -1,7 +1,14 @@
-#include "header/executable.h"
+#include "../header/executable.h"
+
+#include <iostream>
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 Executable::Executable(StringVec args)
-    : argList{args}
+    : Command()
+    , argList(args)
 {
     
 }
@@ -12,7 +19,7 @@ Executable::~Executable()
 // syscalls are going to go here
 // argList should contain the executable name (e.g. ls, cd, ...) first, followed
 // by the arguments and filename, why i decided to call is argList, i don't know.
-void Executable::execute()
+bool Executable::execute()
 {
     // keep track of child
     pid_t childPid;
@@ -29,7 +36,7 @@ void Executable::execute()
 
         // execvp returns => execvp failed 
         // thus we can print an error message and return false
-        std::cout << "Command not recognized.\n";
+        std::cout << "Unrecognized command\n";
 
         return false;
     }
@@ -38,7 +45,7 @@ void Executable::execute()
         do
         {
             // wait for child to get its shit together
-            waitPid = waitpid(pid, &status, WUNTRACED); 
+            waitPid = waitpid(childPid, &status, WUNTRACED); 
        
         // wait until process terminates normally or when user "signals" to stop
         // the process 
