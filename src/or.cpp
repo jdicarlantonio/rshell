@@ -3,6 +3,11 @@
 Or::Or()
 {}
 
+Or::Or(Command* left, Command* right)
+    : Connector(left, right)
+{
+}
+
 Or::~Or()
 {}
 

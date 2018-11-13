@@ -9,9 +9,10 @@ class And
 {
 public:
     And();
+    And(Command* left, Command* right);
     ~And();
 
-    void execute() override;
+    bool execute() override;
 };
 
 #endif

@@ -11,7 +11,7 @@ public:
     Connector(Command* left, Command* right);
     ~Connector();
 
-    void execute() override;
+    bool execute() override;
 
 protected:
     std::string connectorValue;

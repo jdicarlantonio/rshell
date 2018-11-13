@@ -8,7 +8,6 @@ Shell::Shell()
 Shell::~Shell()
 {
     delete userInput;
-    delete cmd;
 }
 
 void Shell::initialize()

@@ -26,6 +26,7 @@ private:
 
 protected:
     StringVec tokens;
+    StringVec connectorValues;
 
     bool singleCommand;
     

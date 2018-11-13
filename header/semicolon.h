@@ -9,9 +9,10 @@ class SemiColon
 {
 public:
     SemiColon();
+    SemiColon(Command* left, Command* right);
     ~SemiColon();
 
-    void execute() override;
+    bool execute() override;
 };
 
 #endif

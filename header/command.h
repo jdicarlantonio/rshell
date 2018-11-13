@@ -11,7 +11,7 @@ public:
     Command() { }
     ~Command() { }
 
-    virtual void execute() = 0;
+    virtual bool execute() = 0;
 };
 
 #endif

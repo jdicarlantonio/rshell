@@ -17,7 +17,7 @@ public:
 
 private:
     StringVec argList; // this may end up being a char array
-    std::string cmd;
+                       // is actually a char* vector now
 };
 
 #endif

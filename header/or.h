@@ -9,9 +9,10 @@ class Or
 {
 public:
     Or();
+    Or(Command* left, Command* right);
     ~Or();
 
-    void execute() override;
+    bool execute() override;
 };
 
 #endif

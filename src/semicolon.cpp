@@ -3,6 +3,11 @@
 SemiColon::SemiColon()
 {}
 
+SemiColon::SemiColon(Command* left, Command* right)
+    : Connector(left, right)
+{
+}
+
 SemiColon::~SemiColon()
 {}
 
