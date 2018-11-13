@@ -13,4 +13,6 @@ SemiColon::~SemiColon()
 
 void SemiColon::execute()
 {
+    lhs->execute();
+    rhs->execute();
 }

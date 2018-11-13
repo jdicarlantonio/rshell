@@ -13,4 +13,8 @@ And::~And()
 
 void And::execute()
 {
+    if(lhs->execute())
+    {
+        rhs->execute(); 
+    }
 }

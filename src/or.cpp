@@ -13,4 +13,8 @@ Or::~Or()
 
 void Or::execute()
 {
+    if(!lhs->execute())
+    {
+        rhs->execute();
+    }
 }
