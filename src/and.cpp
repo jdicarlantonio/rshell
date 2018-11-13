@@ -13,5 +13,4 @@ And::~And()
 
 void And::execute()
 {
-
 }

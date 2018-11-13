@@ -13,5 +13,4 @@ SemiColon::~SemiColon()
 
 void SemiColon::execute()
 {
-
 }

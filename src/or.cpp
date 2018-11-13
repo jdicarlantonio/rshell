@@ -13,5 +13,4 @@ Or::~Or()
 
 void Or::execute()
 {
-
 }
