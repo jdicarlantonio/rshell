@@ -1,4 +1,4 @@
-#include "header/and.h"
+#include "../header/semicolon.h"
 
 SemiColon::SemiColon()
 {}
@@ -11,8 +11,8 @@ SemiColon::SemiColon(Command* left, Command* right)
 SemiColon::~SemiColon()
 {}
 
-void SemiColon::execute()
+bool SemiColon::execute()
 {
     lhs->execute();
-    rhs->execute();
+    return rhs->execute();
 }

@@ -1,4 +1,4 @@
-#include "header/and.h"
+#include "../header/and.h"
 
 And::And()
 {}
@@ -11,10 +11,7 @@ And::And(Command* left, Command* right)
 And::~And()
 {}
 
-void And::execute()
+bool And::execute()
 {
-    if(lhs->execute())
-    {
-        rhs->execute(); 
-    }
+    return (lhs->execute() && rhs->execute());
 }

@@ -1,6 +1,7 @@
-#include "header/shell.h"
+#include "../header/shell.h"
 
 Shell::Shell()
+    : running{false}
 {
     userInput = new Input();
 }
@@ -12,7 +13,8 @@ Shell::~Shell()
 
 void Shell::initialize()
 {
-    while(isExiting())
+    running = true;
+    while(running)
     {
         loop();
     }
@@ -20,29 +22,6 @@ void Shell::initialize()
 
 void Shell::loop()
 {
-    switch(state)
-    {
-        case IN_LOOP:
-        {
-            userInput.getInput();
-        }
-        case EXITING:
-        {
-            state = EXITING;
-        }
-        default:
-        {
-
-        }
-    }
-}
-
-bool Shell::isExiting()
-{
-    if(state == EXITING)
-    {
-        return true;
-    }
-
-    return false;
+    userInput->getInput();
+    userInput->run();
 }

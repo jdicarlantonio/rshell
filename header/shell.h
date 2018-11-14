@@ -15,16 +15,10 @@ public:
     
 private: // private functions
     void loop();
-    bool isExiting();
 
 private: // private members
-    enum State
-    {
-        IN_LOOP = 0,
-        EXITING
-    };
+    bool running;    
 
-    State state;
     Input* userInput; 
 };
 

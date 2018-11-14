@@ -1,8 +1,8 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+// base class
 class Command 
-//    : public Input
 {
 public:
     Command() { }

@@ -1,4 +1,4 @@
-#include "header/or.h"
+#include "../header/or.h"
 
 Or::Or()
 {}
@@ -11,10 +11,7 @@ Or::Or(Command* left, Command* right)
 Or::~Or()
 {}
 
-void Or::execute()
+bool Or::execute()
 {
-    if(!lhs->execute())
-    {
-        rhs->execute();
-    }
+    return (lhs->execute() || rhs->execute());
 }

@@ -1,4 +1,7 @@
-#include "header/connector.h"
+#include "../header/connector.h"
+
+Connector::Connector()
+{}
 
 Connector::Connector(Command* left, Command* right)
     : lhs(left)
@@ -8,7 +11,7 @@ Connector::Connector(Command* left, Command* right)
 Connector::~Connector()
 {}
 
-void Connector::execute()
+bool Connector::execute()
 {
 
 }
