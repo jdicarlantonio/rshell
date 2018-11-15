@@ -23,5 +23,5 @@ void Shell::initialize()
 void Shell::loop()
 {
     userInput->getInput();
-    userInput->run();
+    running = userInput->run();
 }

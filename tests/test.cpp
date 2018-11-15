@@ -8,15 +8,13 @@
 
 TEST(ExecutableTest, lsTest)
 {
-    std::vector<char*> commandOneArg;
+    std::vector<std::string> commandOneArg;
     commandOneArg.push_back("ls");
     commandOneArg.push_back("-l");
-    commandOneArg.push_back(NULL);
     
-    std::vector<char*> commandMultipleArgs;
+    std::vector<std::string> commandMultipleArgs;
     commandMultipleArgs.push_back("ls");
     commandMultipleArgs.push_back("-la");
-    commandMultipleArgs.push_back(NULL);
     
     Executable* multipleArgs = new Executable(commandMultipleArgs); 
     Executable* oneArg = new Executable(commandOneArg); 
@@ -30,17 +28,15 @@ TEST(ExecutableTest, lsTest)
 
 TEST(ExecutableTest, FileManip)
 {
-    std::vector<char*> mkdirCommand;
+    std::vector<std::string> mkdirCommand;
     mkdirCommand.push_back("mkdir");
     mkdirCommand.push_back("TestDir");
-    mkdirCommand.push_back(NULL);
 
     
-    std::vector<char*> rmRecursive;
+    std::vector<std::string> rmRecursive;
     rmRecursive.push_back("rm");
     rmRecursive.push_back("-rf");
     rmRecursive.push_back("TestDir");
-    rmRecursive.push_back(NULL);
 
 
     Executable* mkdirExec = new Executable(mkdirCommand);
@@ -55,15 +51,13 @@ TEST(ExecutableTest, FileManip)
 
 TEST(ConnectorTest, OneConnector)
 {
-    std::vector<char*> lsCmd;
+    std::vector<std::string> lsCmd;
     lsCmd.push_back("ls");
     lsCmd.push_back("-la");
-    lsCmd.push_back(NULL);
 
-    std::vector<char*> mkdirCmd;
+    std::vector<std::string> mkdirCmd;
     mkdirCmd.push_back("mkdir");
     mkdirCmd.push_back("TestDir");
-    mkdirCmd.push_back(NULL);
 
     Executable* lsExec = new Executable(lsCmd);
     Executable* mkdirExec = new Executable(mkdirCmd);
@@ -79,34 +73,30 @@ TEST(ConnectorTest, OneConnector)
 
 TEST(RecursiveTest, MultipleConnectors)
 {
-    std::vector<char*> lsCmd;
+    std::vector<std::string> lsCmd;
     lsCmd.push_back("ls");
     lsCmd.push_back("-a");
-    lsCmd.push_back(NULL);
     
-    std::vector<char*> echoHello;
+    std::vector<std::string> echoHello;
     echoHello.push_back("echo");
     echoHello.push_back("hello");
-    echoHello.push_back(NULL);
     
     Executable* lsExec = new Executable(lsCmd);
     Executable* echoHelloExec = new Executable(echoHello);
 
     Connector* semicolon = new SemiColon(lsExec, echoHelloExec);
 
-    std::vector<char*> mkdirTest;
+    std::vector<std::string> mkdirTest;
     mkdirTest.push_back("mkdir");
     mkdirTest.push_back("TestDir2");
-    mkdirTest.push_back(NULL);
     
     Executable* mkdirTestExec = new Executable(mkdirTest);
 
     Connector* andCon = new And(semicolon, mkdirTestExec);
     
-    std::vector<char*> echoWorld;
+    std::vector<std::string> echoWorld;
     echoHello.push_back("echo");
     echoHello.push_back("world");
-    echoHello.push_back(NULL);
     
     Executable* echoWorldExec = new Executable(echoWorld);
     

@@ -9,6 +9,7 @@
 Executable::Executable(StringVec args)
     : Command()
     , argList(args)
+    , executeSuccess(true)
 {
     
 }
@@ -21,9 +22,10 @@ Executable::~Executable()
 // by the arguments and filename, why i decided to call is argList, i don't know.
 bool Executable::execute()
 {
+    bool successful = true;
     // keep track of child
     pid_t childPid;
-    pid_t waitPid;
+//    pid_t waitPid;
     // status of child (for waitpid())
     int status;
    
@@ -31,26 +33,35 @@ bool Executable::execute()
     childPid = fork();
     if(childPid == 0) // zero means success
     {
+        // convert strings to char*
+        std::vector<char*> args;
+        for(auto const& token : argList)
+        {
+            args.push_back(const_cast<char*>(token.c_str()));
+        }
+        args.push_back(NULL);
+
         // we can run execvp
-        execvp(argList[0], argList.data());
-
-        // execvp returns => execvp failed 
-        // thus we can print an error message and return false
-        std::cout << "Unrecognized command\n";
-
-        return false;
+        if(execvp(args[0], args.data()) == -1)
+        {
+            perror("Command not recognized");
+            successful = false;
+        }
+    }
+    else if(childPid == -1)
+    {
+        perror("fork error");
+        successful = false;
     }
     else
     {
-        do
+        // wait for child to get its shit together
+        if(waitpid(childPid, &status, WUNTRACED) == -1)
         {
-            // wait for child to get its shit together
-            waitPid = waitpid(childPid, &status, WUNTRACED); 
-       
-        // wait until process terminates normally or when user "signals" to stop
-        // the process 
-        } while(!WIFEXITED(status) && !WIFSIGNALED(status));
+            perror("Command not found");
+            successful = false;
+        }
     }
 
-    return true;
+    return successful;
 }

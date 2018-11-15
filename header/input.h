@@ -9,7 +9,7 @@
 #include "connector.h"
 #include "executable.h"
 
-using StringVec = std::vector<char*>;
+using StringVec = std::vector<std::string>;
 
 class Input
 {

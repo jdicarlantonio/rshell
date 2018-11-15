@@ -1,5 +1,7 @@
 #include "../header/and.h"
 
+#include <iostream>
+
 And::And()
 {}
 
