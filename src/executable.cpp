@@ -27,6 +27,11 @@ bool Executable::execute()
     pid_t childPid;
     // status of child (for waitpid())
     int status;
+    
+    if(argList[0] == "exit")
+    {
+        exit(0);
+    }
 
     // create child process 
     childPid = fork();
@@ -57,7 +62,7 @@ bool Executable::execute()
     else
     {
         // wait for child to get its shit together
-        if(waitpid(childPid, &status, 0) == -1)
+        if(waitpid(childPid, &status, 0) < 0)
         {
             perror("wait error");
             successful = false;

@@ -1,5 +1,5 @@
 # rshell
-A very basic implementation of BASH. Written in C++ using the composite design pattern.
+A very basic command shell implementation. Written in C++ using the composite design pattern.
 
 ## Overview
 In this shell implementation, you can enter any commands that are in your path. I.E. `ls -la`, `mkdir tempdir`, etc. It runs in your terminal emulator and can be exited by typing in the `exit` command (see bugs).
