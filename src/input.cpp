@@ -27,6 +27,11 @@ void Input::getInput()
 
 bool Input::run()
 {
+    if(tokens.size() < 1)
+    {
+        return true; // we probably have a comment here, so just continue
+    }
+
     if(tokens[0] == "exit")
     {   
         return false;
@@ -69,7 +74,12 @@ void Input::tokenize(std::string input)
     {
         std::string tokenTemp(tokenStr);
         int endOfToken = tokenTemp.size();
-    
+        
+        if(tokenTemp == "#" || tokenTemp[0] == '#')
+        {
+            break;
+        }
+ 
         tokens.push_back(tokenTemp);
 
         // check for semi colon 
@@ -86,6 +96,11 @@ void Input::tokenize(std::string input)
         }
         
         tokenStr = strtok(NULL, " ");
+    }
+
+    if(tokens.size() < 1)
+    {
+        return;
     }
   
     // seperate commands and arguments from connectors
