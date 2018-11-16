@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <cstring>
+#include <cstdio>
+#include <unistd.h>
 
 Input::Input()
     : singleCommand(false)
@@ -17,7 +19,11 @@ Input::~Input()
 // this function does what you think it does
 void Input::getInput()
 {
-    std::cout << "$ ";
+    std::string userLog(getlogin());
+    char hostname[256];
+    gethostname(hostname, 256);
+
+    std::cout << userLog << '@' << hostname << ": ";
 
     std::string currentInput;
     std::getline(std::cin, currentInput);
