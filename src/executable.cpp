@@ -27,7 +27,7 @@ bool Executable::execute()
     pid_t childPid;
     // status of child (for waitpid())
     int status;
-   
+
     // create child process 
     childPid = fork();
     if(childPid == 0) // zero means success
@@ -41,26 +41,27 @@ bool Executable::execute()
         args.push_back(NULL);
 
         // we can run execvp
-        if(execvp(args[0], args.data()) == -1)
-        {
-            perror("Command not recognized");
-            successful = false;
-        }
+        execvp(args[0], args.data());
+        
+        // execvp returns we have an error    
+        perror("Command not recognized");
+        successful = false;
+
     }
-    else if(childPid == -1)
+    else if(childPid < 0)
     {
         perror("fork error");
         successful = false;
-        exit(0);
+        exit(1);
     }
     else
     {
         // wait for child to get its shit together
-        if(waitpid(childPid, &status, WUNTRACED) == -1)
+        if(waitpid(childPid, &status, 0) == -1)
         {
-            perror("Command not found");
+            perror("wait error");
             successful = false;
-            exit(0);
+            exit(1);
         }
     }
 

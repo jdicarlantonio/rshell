@@ -22,11 +22,8 @@ void Input::getInput()
     std::string userLog(getlogin());
     char hostname[256];
     gethostname(hostname, 256);
-
-    char cwd[1024];
-    getcwd(cwd, 1024);
-
-    std::cout << userLog << '@' << hostname << ":" << cwd << "$ ";
+    
+    std::cout << userLog << '@' << hostname << "$ ";
 
     std::string currentInput;
     std::getline(std::cin, currentInput);
