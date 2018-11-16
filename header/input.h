@@ -29,7 +29,6 @@ protected:
     StringVec connectorValues;
 
     bool singleCommand;
-    bool running;
     
     std::vector<Connector*> connectors;
     std::vector<Executable*> executables;

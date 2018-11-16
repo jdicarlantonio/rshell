@@ -25,7 +25,6 @@ bool Executable::execute()
     bool successful = true;
     // keep track of child
     pid_t childPid;
-//    pid_t waitPid;
     // status of child (for waitpid())
     int status;
    
@@ -52,6 +51,7 @@ bool Executable::execute()
     {
         perror("fork error");
         successful = false;
+        exit(0);
     }
     else
     {
@@ -60,6 +60,7 @@ bool Executable::execute()
         {
             perror("Command not found");
             successful = false;
+            exit(0);
         }
     }
 

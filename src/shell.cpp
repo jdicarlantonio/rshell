@@ -18,6 +18,8 @@ void Shell::initialize()
     {
         loop();
     }
+
+    exit(0);
 }
 
 void Shell::loop()

@@ -50,6 +50,7 @@ bool Input::run()
         connectorValues.clear();
         connectors.clear();
         executables.clear();
+
         return true;
     }
 }
