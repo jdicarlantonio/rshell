@@ -8,6 +8,7 @@
 #include <cstring>
 #include <cstdio>
 #include <unistd.h>
+#include <csignal>
 
 Input::Input()
     : singleCommand(false)
@@ -40,6 +41,7 @@ bool Input::run()
 
     if(tokens[0] == "exit")
     {   
+        exit(0);
         return false;
     }
     else

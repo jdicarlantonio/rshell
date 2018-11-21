@@ -24,7 +24,6 @@ private:
     void tokenize(std::string input);
     void initializeCommands();
 
-protected:
     StringVec tokens;
     StringVec connectorValues;
 

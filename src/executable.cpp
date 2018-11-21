@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <cerrno>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -25,8 +26,6 @@ bool Executable::execute()
     bool successful = true;
     // keep track of child
     pid_t childPid;
-    // status of child (for waitpid())
-    int status;
     
     if(argList[0] == "exit")
     {
@@ -35,6 +34,9 @@ bool Executable::execute()
 
     // create child process 
     childPid = fork();
+    int errnoSave = errno;
+    // status of child (for waitpid())
+    int status;
     if(childPid == 0) // zero means success
     {
         // convert strings to char*
@@ -46,28 +48,35 @@ bool Executable::execute()
         args.push_back(NULL);
 
         // we can run execvp
-        execvp(args[0], args.data());
-        
-        // execvp returns we have an error    
-        perror("Command not recognized");
-        successful = false;
+        if(execvp(args[0], args.data()) == -1)
+        {
+            errnoSave = errno;
+            successful = false;
+            perror("execvp error");
 
+            exit(69); 
+        }
     }
     else if(childPid < 0)
     {
         perror("fork error");
         successful = false;
-        exit(1);
     }
     else
     {
-        // wait for child to get its shit together
+        // wait for child 
         if(waitpid(childPid, &status, 0) < 0)
         {
             perror("wait error");
             successful = false;
-            exit(1);
         }
+
+    }
+
+    int exitStatus = WEXITSTATUS(status);
+    if(exitStatus > 0)
+    {
+        successful = false;
     }
 
     return successful;
