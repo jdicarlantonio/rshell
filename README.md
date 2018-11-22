@@ -14,6 +14,12 @@ make
 ```
 **NOTE:** `cmake3` is needed for the hammer server.
 
+To get googletest, run the following before building
+```
+git submodule init
+git submodule update
+```
+
 ## Known Bugs
 * Entering semicolons with a space before will not work, I.E. "ls -la ; mkdir temp", will not execute properly
 * Connectors expect a left hand command and a right hand command. If you try to put a command such as `ls -l &&` it will execute the first command and show an error.
