@@ -15,6 +15,6 @@ make
 **NOTE:** `cmake3` is needed for the hammer server.
 
 ## Known Bugs
-* If entering a command with an executable that fails, you will need to enter `exit` multiple times to exit the shell. This seems to be a problem with zombie processes, since the number of times you need to press exit depends on how many commands failed. If all commands are successful, exit works perfectly.
+* Entering semicolons with a space before will not work, I.E. "ls -la ; mkdir temp", will not execute properly
 * Connectors expect a left hand command and a right hand command. If you try to put a command such as `ls -l &&` it will execute the first command and show an error.
 * Beginning a command with '&&' does not return an error as it should, but the commands after work as if it was never there

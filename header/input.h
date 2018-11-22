@@ -19,9 +19,11 @@ public:
 
     void getInput();
     bool run(); // runs the command as per input
+    void tokenize(std::string input);
+
+    StringVec getTokens() { return tokens; }
 
 private:
-    void tokenize(std::string input);
     void initializeCommands();
 
     StringVec tokens;

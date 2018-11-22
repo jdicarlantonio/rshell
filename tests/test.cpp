@@ -5,6 +5,87 @@
 #include "../header/and.h"
 #include "../header/or.h"
 #include "../header/semicolon.h"
+#include "../header/input.h"
+
+#include <vector>
+#include <string>
+
+TEST(ParserTest, SingleCommand)
+{
+    Input input;
+    std::vector<std::string> cmd = {
+        "ls",
+        "-la"
+    };
+
+    input.tokenize("ls -la");
+
+    EXPECT_EQ(cmd, input.getTokens());
+}
+
+TEST(ParserTest, SemiColon)
+{
+    Input input;
+    std::vector<std::string> cmd = {
+        "ls",
+        "-la",
+        ";",
+        "pwd"
+    };
+
+    input.tokenize("ls -la; pwd");
+
+    EXPECT_EQ(cmd, input.getTokens());
+}
+
+TEST(ParserTest, And)
+{
+    Input input;
+    std::vector<std::string> cmd = {
+        "ls",
+        "-la",
+        "&&",
+        "pwd"
+    };
+
+    input.tokenize("ls -la && pwd");
+
+    EXPECT_EQ(cmd, input.getTokens());
+}
+
+TEST(ParserTest, Or)
+{
+    Input input;
+    std::vector<std::string> cmd = {
+        "ls",
+        "-la",
+        "||",
+        "pwd"
+    };
+
+    input.tokenize("ls -la || pwd");
+
+    EXPECT_EQ(cmd, input.getTokens());
+}
+
+TEST(ParserTest, MultipleConnectors)
+{
+    Input input;
+    std::vector<std::string> cmd = {
+        "ls",
+        "-la",
+        "||",
+        "pwd",
+        ";",
+        "ls",
+        "&&",
+        "pwd"
+    };
+
+    input.tokenize("ls -la || pwd; ls && pwd");
+
+    EXPECT_EQ(cmd, input.getTokens());
+}
 
 TEST(ExecutableTest, lsTest)
 {
@@ -15,7 +96,7 @@ TEST(ExecutableTest, lsTest)
     std::vector<std::string> commandMultipleArgs;
     commandMultipleArgs.push_back("ls");
     commandMultipleArgs.push_back("-la");
-    
+ 
     Executable* multipleArgs = new Executable(commandMultipleArgs); 
     Executable* oneArg = new Executable(commandOneArg); 
 
@@ -56,8 +137,7 @@ TEST(ConnectorTest, OneConnector)
     lsCmd.push_back("-la");
 
     std::vector<std::string> mkdirCmd;
-    mkdirCmd.push_back("mkdir");
-    mkdirCmd.push_back("TestDir");
+    mkdirCmd.push_back("pwd");
 
     Executable* lsExec = new Executable(lsCmd);
     Executable* mkdirExec = new Executable(mkdirCmd);
@@ -87,8 +167,7 @@ TEST(RecursiveTest, MultipleConnectors)
     Connector* semicolon = new SemiColon(lsExec, echoHelloExec);
 
     std::vector<std::string> mkdirTest;
-    mkdirTest.push_back("mkdir");
-    mkdirTest.push_back("TestDir2");
+    mkdirTest.push_back("pwd");
     
     Executable* mkdirTestExec = new Executable(mkdirTest);
 

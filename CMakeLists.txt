@@ -1,6 +1,6 @@
 set (CMAKE_CXX_STANDARD 11)
 
-ADD_SUBDIRECTORY(tests/googletest)
+ADD_SUBDIRECTORY(googletest)
 
 ADD_EXECUTABLE(rshell
     src/executable.cpp
@@ -18,6 +18,7 @@ ADD_EXECUTABLE(test
     src/executable.cpp
     src/semicolon.cpp
     src/connector.cpp
+    src/input.cpp
     src/and.cpp
     src/or.cpp
 )
