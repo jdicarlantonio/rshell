@@ -13,20 +13,16 @@ class BuiltIn
     : public Executable
 {
 public:
-    BuiltIn() {}
-    BuiltIn(std::string c)
-        : cmd(c)
-    { split(); }
-
+    BuiltIn(std::vector<std::string> argList)
+        : Executable(argList)
+    {}
     ~BuiltIn() {}
 
-    bool execute() override 
-    {}
-
-    void clearPathname() { pathname.clear(); }
-
+    virtual bool execute() override {}
+/*
 protected:
-    std::string cmd; // entire command
+    std::vector<std::string> args; // entire command
+*/
 };
 
 //==================================================
@@ -37,9 +33,10 @@ protected:
 struct Test
     : public BuiltIn
 {
-    Test(std::string c)
-        : cmd(c)
+    Test(std::vector<std::string> argList)
+        : BuiltIn(argList)
     {}
+    ~Test() {}
 
     bool execute() override;
 };

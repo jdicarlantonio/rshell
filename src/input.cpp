@@ -3,6 +3,7 @@
 #include "../header/and.h"
 #include "../header/or.h"
 #include "../header/executable.h"
+#include "../header/builtin.h"
 
 #include <iostream>
 #include <cstring>
@@ -15,7 +16,23 @@ Input::Input()
 {}
 
 Input::~Input()
-{}
+{
+    if(executables.size() > 0)
+    {
+        for(int i = 0; i < executables.size(); ++i)
+        {
+            delete executables[i];
+        }
+    }
+    
+    if(connectors.size() > 0)
+    {
+        for(int i = 0; i < connectors.size(); ++i)
+        {
+            delete connectors[i];
+        }
+    }
+}
 
 // this function does what you think it does
 void Input::getInput()
@@ -119,7 +136,7 @@ void Input::tokenize(std::string input)
         // the connector type, but don't create a connector object just yet
         if(tokens[i] == ";")
         {
-            executables.push_back(new Executable(argList));
+            pushExecutable(argList);
             connectorValues.push_back(";");
             ++i;
             
@@ -127,7 +144,7 @@ void Input::tokenize(std::string input)
         }
         if(tokens[i] == "||")
         {
-            executables.push_back(new Executable(argList));
+            pushExecutable(argList);
             connectorValues.push_back("||");
             ++i;
             
@@ -135,7 +152,7 @@ void Input::tokenize(std::string input)
         }
         if(tokens[i] == "&&")
         {
-            executables.push_back(new Executable(argList));
+            pushExecutable(argList);
             connectorValues.push_back("&&");
             ++i;
             
@@ -152,6 +169,18 @@ void Input::tokenize(std::string input)
     {
         executables.push_back(new Executable(argList));
         singleCommand = true;
+    }
+}
+
+void Input::pushExecutable(StringVec& argList)
+{
+    if(argList[0] == "test")
+    {
+        executables.push_back(new Test(argList));
+    }
+    else
+    {
+        executables.push_back(new Executable(argList));
     }
 }
 

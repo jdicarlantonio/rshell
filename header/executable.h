@@ -19,9 +19,12 @@ public:
 
     bool execute() override;
 
-private:
+protected:
     StringVec argList; // this may end up being a char array
                        // is actually a char* vector now
+                       // and its back to a string vector
+
+private:
     bool executeSuccess;
 };
 

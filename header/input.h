@@ -24,6 +24,7 @@ public:
     StringVec getTokens() { return tokens; }
 
 private:
+    void pushExecutable(StringVec& argList);
     void initializeCommands();
 
     StringVec tokens;

@@ -2,8 +2,13 @@
  * Source code for all built in functions 
  */
 
+// user includes
 #include "../header/builtin.h"
 
+// std library
+#include <iostream>
+
+// system
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -14,33 +19,39 @@
 
 bool Test::execute()
 {
-    // split command into argument and pathname
+    // get argument and pathname
+    // if no argument specified, default to -e
+    char argument = 'e';
     std::string pathname;
-    char arg = 'e';
-    
-    if(cmd[0] == '-')
-    {
-        // if parsing went well, the argument should be at index [1]
-        arg = cmd[1];
-        
-        // find first index of pathname, so we can ignore whitespace
-        int index = 3;
-        while(cmd[index] == ' ')
-        {
-            ++index;
-        }
 
-        pathname = cmd.substr(index, string::npos);
+    if(argList[1][0] == '-')
+    {
+        if(argList[1].length() > 2)
+        {
+            std::cout << "Parsing error: invalid argument";
+            return false;
+        }
+       
+        if(argList[1][1] == 'e' || argList[1][1] == 'd' || argList[1][1] == 'f') 
+        {
+            argument = argList[1][1];
+        }
+        else
+        {
+            std::cout << "Parsing error: invalid argument";
+            return false;
+        }
+        pathname = argList[2];
     }
     else
     {
-        pathname = cmd;
+        pathname = argList[1];
     }
 
     struct stat buf;
-    const char* c_pathname = pathname.cstr();
+    const char* c_pathname = pathname.c_str();
 
-    switch(arg)
+    switch(argument)
     {
         case 'e':
         {
