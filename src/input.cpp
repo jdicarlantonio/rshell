@@ -162,12 +162,14 @@ void Input::tokenize(std::string input)
         argList.push_back(tokens[i]);
     }
    
-    executables.push_back(new Executable(argList));
+    pushExecutable(argList);
+//    executables.push_back(new Executable(argList));
  
     // if only a single command was entered, we should handle that differently
     if(connectorValues.size() < 1)
     {
-        executables.push_back(new Executable(argList));
+//        pushExecutable(argList);
+//        executables.push_back(new Executable(argList));
         singleCommand = true;
     }
 }

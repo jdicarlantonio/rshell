@@ -24,23 +24,31 @@ bool Test::execute()
     char argument = 'e';
     std::string pathname;
 
+    // check if no file
+    if(argList.size() < 2)
+    {
+        // should always be false blank input is nothing and will never exist
+        std::cout << "(false)\n";
+        return false;
+    }
+    
     if(argList[1][0] == '-')
     {
+        // check if user entered in invalid stuff
         if(argList[1].length() > 2)
         {
-            std::cout << "Parsing error: invalid argument";
+            std::cout << "Parsing error: invalid argument\n";
             return false;
         }
-       
-        if(argList[1][1] == 'e' || argList[1][1] == 'd' || argList[1][1] == 'f') 
+      
+        // check if no file again
+        if(argList.size() < 3)
         {
-            argument = argList[1][1];
-        }
-        else
-        {
-            std::cout << "Parsing error: invalid argument";
+            std::cout << "(false)\n";
             return false;
         }
+ 
+        argument = argList[1][1];
         pathname = argList[2];
     }
     else
