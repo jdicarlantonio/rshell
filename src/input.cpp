@@ -323,6 +323,7 @@ void Input::initializeCommands()
     }
 }
 
+// this function is a beast and is probably bad
 void Input::constructPrecedence()
 {
     StringVec symbols; // keep track of connectors and parenthesis
@@ -346,7 +347,15 @@ void Input::constructPrecedence()
         {
             if(commands.size() > 0)
             {
-                Executable* exec = new Executable(commands);
+                Executable* exec;
+                if(commands[0] == "test")
+                {
+                    exec = new test(commands);
+                }
+                else
+                { 
+                    exec = new Executable(commands);
+                }
                 cmd.push_back(exec);       
                 commands.clear();
             }
@@ -369,7 +378,7 @@ void Input::constructPrecedence()
                     symbols.pop_back();
                     symbols.push_back(tokens.at(i));
                 }
-                if(symbols.back() == "&&")
+                else if(symbols.back() == "&&")
                 {
                     Command* rhs = cmd.back();
                     cmd.pop_back();
@@ -381,7 +390,7 @@ void Input::constructPrecedence()
                     symbols.pop_back();
                     symbols.push_back(tokens.at(i));
                 }
-                if(symbols.back() == ";")
+                else if(symbols.back() == ";")
                 {
                     Command* rhs = cmd.back();
                     cmd.pop_back();
@@ -398,15 +407,17 @@ void Input::constructPrecedence()
 
         if(tokens.at(i) == ")")
         {
-            /*
-            if(tokens.at(i - 1) == ")")
-            {
-                continue; 
-            }
-            */
             if(commands.size() > 0)
             {
-                Executable* exec = new Executable(commands);
+                Executable* exec;
+                if(commands[0] == "test")
+                {
+                    exec = new test(commands);
+                }
+                else
+                {
+                    exec = new Executable(commands);
+                }
                 cmd.push_back(exec);       
                 commands.clear();
             }
@@ -417,23 +428,45 @@ void Input::constructPrecedence()
             Command* lhs = cmd.back();
             cmd.pop_back();
 
-            if(symbols.back() == "&&")
+            if(symbols.back() == "()")
             {
-                cmd.push_back(new Parenthesis(new And(lhs, rhs)));
                 symbols.pop_back();
-                symbols.pop_back();
+                if(symbols.back() == "&&")
+                {
+                    cmd.push_back(new And(lhs, rhs));
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == "||")
+                {
+                    cmd.push_back(new Or(lhs, rhs));
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == ";")
+                {
+                    cmd.push_back(new SemiColon(lhs, rhs));
+                    symbols.pop_back();
+                }
             }
-            if(symbols.back() == "||")
-            {
-                cmd.push_back(new Parenthesis(new Or(lhs, rhs)));
-                symbols.pop_back();
-                symbols.pop_back();
-            }
-            if(symbols.back() == ";")
-            {
-                cmd.push_back(new Parenthesis(new SemiColon(lhs, rhs)));
-                symbols.pop_back();
-                symbols.pop_back();
+            else
+            { 
+                if(symbols.back() == "&&")
+                {
+                    cmd.push_back(new And(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == "||")
+                {
+                    cmd.push_back(new Or(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == ";")
+                {
+                    cmd.push_back(new SemiColon(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.pop_back();
+                }
             }
         }
     }
