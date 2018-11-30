@@ -4,6 +4,8 @@
 #include "../header/or.h"
 #include "../header/executable.h"
 #include "../header/builtin.h"
+#include "../header/command.h"
+#include "../header/parenthesis.h"
 
 #include <iostream>
 #include <cstring>
@@ -45,7 +47,13 @@ void Input::getInput()
 
     std::string currentInput;
     std::getline(std::cin, currentInput);
-    
+
+    if(!splitParen(currentInput))
+    {
+        std::cout << "Error: expected ')'\n";
+        return;
+    }
+
     tokenize(currentInput);
 }
 
@@ -71,9 +79,18 @@ bool Input::run()
         }
         else
         {
-            initializeCommands();
-            int numConnectors = connectors.size();
-            connectors[numConnectors - 1]->execute();
+            if(precedence)
+            {
+                constructPrecedence();
+//                connectors.back()->execute();
+            }
+            else
+            {
+                initializeCommands();
+                
+                int numConnectors = connectors.size();
+                connectors[numConnectors - 1]->execute();
+            }
         }
 
         tokens.clear();
@@ -87,12 +104,15 @@ bool Input::run()
 
 // takes user input and puts them into tokens which are then differentiated between
 // a connector and an executable with arguments
+// this is one hell of a function and should probably be split up
 void Input::tokenize(std::string input)
 {
     // get string into a char array
     char* charInput = new char[input.size() + 1];
     std::strcpy(charInput, input.c_str());
-   
+  
+    bool inParens = false;
+ 
     char* tokenStr;
     tokenStr = strtok(charInput, " ");
     while(tokenStr != NULL)
@@ -104,8 +124,21 @@ void Input::tokenize(std::string input)
         {
             break;
         }
- 
+
         tokens.push_back(tokenTemp);
+
+        // check for brackets, and if its an open bracket switch with "test"
+        // remove close bracket
+        if(tokenTemp == "[")
+        {
+            tokens.pop_back();
+            tokens.push_back("test");
+        }
+        
+        if(tokenTemp == "]")
+        {
+            tokens.pop_back();
+        }
 
         // check for semi colon 
         if(tokenTemp[endOfToken - 1] == ';')
@@ -127,11 +160,16 @@ void Input::tokenize(std::string input)
     {
         return;
     }
-  
+    
     // seperate commands and arguments from connectors
     StringVec argList;
     for(int i = 0; i < tokens.size(); ++i)    
     {
+        // ignore parenthesis for now
+        if(tokens[i] == "(" || tokens[i] == ")")
+        {
+            continue;
+        }
         // remove connector from arglist, create an executable object, and store
         // the connector type, but don't create a connector object just yet
         if(tokens[i] == ";")
@@ -161,24 +199,69 @@ void Input::tokenize(std::string input)
         
         argList.push_back(tokens[i]);
     }
-   
+
     pushExecutable(argList);
 //    executables.push_back(new Executable(argList));
  
     // if only a single command was entered, we should handle that differently
     if(connectorValues.size() < 1)
     {
+        // not sure if im going to need some of this code or not
 //        pushExecutable(argList);
 //        executables.push_back(new Executable(argList));
         singleCommand = true;
     }
 }
 
+bool Input::splitParen(std::string& input)
+{
+    int openParenCount = 0, closedParenCount = 0;
+
+    for(int i = 0; i < input.size(); ++i) 
+    {
+        if(input[i] == '(')
+        {
+            ++openParenCount;
+            
+            if(input[i + 1] != ' ')
+            {
+                input.insert(i + 1, " ");
+            }
+        }
+
+        if(input[i] == ')')
+        {
+            ++closedParenCount;
+           
+            if(input[i - 1] != ' ')
+            {
+                input.insert(i, " ");
+                ++i;
+            }
+        }
+    }
+
+    if(openParenCount > 0 && closedParenCount > 0)
+    {
+        if(openParenCount != closedParenCount)
+        {
+            precedence = false;
+            return false; 
+        }
+
+        precedence = true;
+        return true;
+    }
+
+    precedence = false;
+    return true;
+}
+
 void Input::pushExecutable(StringVec& argList)
 {
     if(argList[0] == "test")
     {
-        executables.push_back(new Test(argList));
+        executables.push_back(new test(argList));
     }
     else
     {
@@ -238,4 +321,161 @@ void Input::initializeCommands()
         
         ++j;
     }
+}
+
+void Input::constructPrecedence()
+{
+    StringVec symbols; // keep track of connectors and parenthesis
+    std::vector<Command*> cmd; // keep track of commands and arguments
+
+    StringVec commands;
+    for(int i = 0; i < tokens.size(); ++i)
+    {
+        if(tokens.at(i) == "(")
+        {
+            symbols.push_back("()");
+        }
+
+        if(tokens.at(i) != "||" && tokens.at(i) != "&&" && tokens.at(i) != ";" 
+            && tokens.at(i) != "(" && tokens.at(i) != ")")
+        {
+            commands.push_back(tokens.at(i));
+        }
+
+        if(tokens.at(i) == "||" || tokens.at(i) == "&&" || tokens.at(i) == ";")
+        {
+            if(commands.size() > 0)
+            {
+                Executable* exec = new Executable(commands);
+                cmd.push_back(exec);       
+                commands.clear();
+            }
+ 
+            if(symbols.empty() || symbols.back() == "()")
+            {
+                symbols.push_back(tokens[i]);
+            }
+            else
+            {
+                if(symbols.back() == "||")
+                {
+                    Command* rhs = cmd.back();
+                    cmd.pop_back();
+
+                    Command* lhs = cmd.back();
+                    cmd.pop_back(); 
+        
+                    cmd.push_back(new Or(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.push_back(tokens.at(i));
+                }
+                if(symbols.back() == "&&")
+                {
+                    Command* rhs = cmd.back();
+                    cmd.pop_back();
+
+                    Command* lhs = cmd.back();
+                    cmd.pop_back(); 
+        
+                    cmd.push_back(new And(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.push_back(tokens.at(i));
+                }
+                if(symbols.back() == ";")
+                {
+                    Command* rhs = cmd.back();
+                    cmd.pop_back();
+
+                    Command* lhs = cmd.back();
+                    cmd.pop_back(); 
+        
+                    cmd.push_back(new SemiColon(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.push_back(tokens.at(i));
+                }
+            }
+        }
+
+        if(tokens.at(i) == ")")
+        {
+            /*
+            if(tokens.at(i - 1) == ")")
+            {
+                continue; 
+            }
+            */
+            if(commands.size() > 0)
+            {
+                Executable* exec = new Executable(commands);
+                cmd.push_back(exec);       
+                commands.clear();
+            }
+
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+            
+            Command* lhs = cmd.back();
+            cmd.pop_back();
+
+            if(symbols.back() == "&&")
+            {
+                cmd.push_back(new Parenthesis(new And(lhs, rhs)));
+                symbols.pop_back();
+                symbols.pop_back();
+            }
+            if(symbols.back() == "||")
+            {
+                cmd.push_back(new Parenthesis(new Or(lhs, rhs)));
+                symbols.pop_back();
+                symbols.pop_back();
+            }
+            if(symbols.back() == ";")
+            {
+                cmd.push_back(new Parenthesis(new SemiColon(lhs, rhs)));
+                symbols.pop_back();
+                symbols.pop_back();
+            }
+        }
+    }
+
+    if(cmd.size() > 1)
+    {
+        if(symbols.back() == "||") 
+        {
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+
+            Command* lhs = cmd.back();
+            cmd.pop_back();            
+
+            Or* orExec = new Or(lhs, rhs);
+            orExec->execute();
+        }
+        if(symbols.back() == "&&") 
+        {
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+
+            Command* lhs = cmd.back();
+            cmd.pop_back();            
+
+            And* andExec = new And(lhs, rhs);
+            andExec->execute();
+        }
+        if(symbols.back() == ";") 
+        {
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+
+            Command* lhs = cmd.back();
+            cmd.pop_back();            
+
+            SemiColon* semiColon = new SemiColon(lhs, rhs);
+            semiColon->execute();
+        }
+    }
+    else
+    {
+        cmd.back()->execute(); 
+    } 
 }

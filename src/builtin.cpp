@@ -14,10 +14,10 @@
 #include <unistd.h>
 
 //=========================================
-// Test functions                         =
+// test functions                         =
 //=========================================
 
-bool Test::execute()
+bool test::execute()
 {
     // get argument and pathname
     // if no argument specified, default to -e

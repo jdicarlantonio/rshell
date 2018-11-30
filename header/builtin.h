@@ -19,10 +19,6 @@ public:
     ~BuiltIn() {}
 
     virtual bool execute() override {}
-/*
-protected:
-    std::vector<std::string> args; // entire command
-*/
 };
 
 //==================================================
@@ -30,13 +26,13 @@ protected:
 //==================================================
 
 // built in command 'test'
-struct Test
+struct test
     : public BuiltIn
 {
-    Test(std::vector<std::string> argList)
+    test(std::vector<std::string> argList)
         : BuiltIn(argList)
     {}
-    ~Test() {}
+    ~test() {}
 
     bool execute() override;
 };

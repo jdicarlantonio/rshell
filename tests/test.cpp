@@ -6,6 +6,7 @@
 #include "../header/or.h"
 #include "../header/semicolon.h"
 #include "../header/input.h"
+#include "../header/builtin.h"
 
 #include <vector>
 #include <string>
@@ -190,6 +191,84 @@ TEST(RecursiveTest, MultipleConnectors)
     delete andCon;
     delete echoWorldExec;
     delete orCon;
+}
+
+TEST(BuiltInTest, TestCommandTrue)
+{
+    std::vector<std::string> testCmd;
+    testCmd.push_back("test");
+    testCmd.push_back("-e");
+    testCmd.push_back("dummyfile");
+
+    Executable* testTest = new test(testCmd);
+
+    EXPECT_EQ(false, testTest->execute());
+
+    delete testTest;
+}
+
+TEST(BuiltInTest, TestCommandFalse)
+{
+    std::vector<std::string> testCmd;
+    testCmd.push_back("test");
+    testCmd.push_back("-e");
+    testCmd.push_back("test");
+
+    Executable* testTest = new test(testCmd);
+
+    EXPECT_EQ(true, testTest->execute());
+
+    delete testTest;
+}
+
+TEST(BuiltInTest, TestCommandArguments)
+{
+    std::vector<std::string> testCmd;
+    testCmd.push_back("test");
+    testCmd.push_back("-e");
+    testCmd.push_back("test");
+    Executable* eTest = new test(testCmd);
+
+    std::vector<std::string> testCmd2;
+    testCmd2.push_back("test");
+    testCmd2.push_back("-e");
+    testCmd2.push_back("bin");
+    Executable* dTest = new test(testCmd2);
+
+    std::vector<std::string> testCmd3;
+    testCmd2.push_back("test");
+    testCmd2.push_back("-f");
+    testCmd2.push_back("Makefile");
+    Executable* fTest = new test(testCmd3);
+
+    EXPECT_EQ(true, eTest->execute());
+    EXPECT_EQ(true, dTest->execute());
+    EXPECT_EQ(false, fTest->execute());
+}
+
+TEST(BuiltInTest, SymbolicTestCommand)
+{
+    std::vector<std::string> symTest;
+    symTest.push_back("[");
+    symTest.push_back("-e");
+    symTest.push_back("]");
+
+    Executable* tester = new test(symTest);
+   
+    EXPECT_EQ(false, tester->execute());
+}
+
+TEST(BuiltInTest, SymbolicTestCommandOnFile)
+{
+    std::vector<std::string> symTest;
+    symTest.push_back("[");
+    symTest.push_back("-e");
+    symTest.push_back("test");
+    symTest.push_back("]");
+
+    Executable* tester = new test(symTest);
+   
+    EXPECT_EQ(true, tester->execute());
 }
 
 int main(int argc, char **argv) 
