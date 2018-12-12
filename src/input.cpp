@@ -421,12 +421,15 @@ void Input::constructPrecedence()
         }
 
         if(tokens.at(i) != "||" && tokens.at(i) != "&&" && tokens.at(i) != ";" 
-            && tokens.at(i) != "(" && tokens.at(i) != ")")
+            && tokens.at(i) != "(" && tokens.at(i) != ")" && tokens.at(i) != ">"
+            && tokens.at(i) != "<" && tokens.at(i) != ">>" && tokens.at(i) != "|")
         {
             commands.push_back(tokens.at(i));
         }
 
-        if(tokens.at(i) == "||" || tokens.at(i) == "&&" || tokens.at(i) == ";")
+        if(tokens.at(i) == "||" || tokens.at(i) == "&&" || tokens.at(i) == ";"
+            || tokens.at(i) == "<" || tokens.at(i) == ">" || tokens.at(i) == "|"
+            || tokens.at(i) == ">>")
         {
             if(commands.size() > 0)
             {
@@ -485,6 +488,54 @@ void Input::constructPrecedence()
                     symbols.pop_back();
                     symbols.push_back(tokens.at(i));
                 }
+                else if(symbols.back() == "|")
+                {
+                    Command* rhs = cmd.back();
+                    cmd.pop_back();
+
+                    Command* lhs = cmd.back();
+                    cmd.pop_back(); 
+        
+                    cmd.push_back(new Pipe(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.push_back(tokens.at(i));
+                }
+                else if(symbols.back() == ">")
+                {
+                    Command* rhs = cmd.back();
+                    cmd.pop_back();
+
+                    Command* lhs = cmd.back();
+                    cmd.pop_back(); 
+        
+                    cmd.push_back(new OutputRedir(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.push_back(tokens.at(i));
+                }
+                else if(symbols.back() == "<")
+                {
+                    Command* rhs = cmd.back();
+                    cmd.pop_back();
+
+                    Command* lhs = cmd.back();
+                    cmd.pop_back(); 
+        
+                    cmd.push_back(new InputRedir(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.push_back(tokens.at(i));
+                }
+                else if(symbols.back() == ">>")
+                {
+                    Command* rhs = cmd.back();
+                    cmd.pop_back();
+
+                    Command* lhs = cmd.back();
+                    cmd.pop_back(); 
+        
+                    cmd.push_back(new OutputAppend(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.push_back(tokens.at(i));
+                }
             }
         }
 
@@ -529,6 +580,26 @@ void Input::constructPrecedence()
                     cmd.push_back(new SemiColon(lhs, rhs));
                     symbols.pop_back();
                 }
+                else if(symbols.back() == "<")
+                {
+                    cmd.push_back(new InputRedir(lhs, rhs));
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == ">")
+                {
+                    cmd.push_back(new OutputRedir(lhs, rhs));
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == ">>")
+                {
+                    cmd.push_back(new OutputAppend(lhs, rhs));
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == "|")
+                {
+                    cmd.push_back(new Pipe(lhs, rhs));
+                    symbols.pop_back();
+                }
             }
             else
             { 
@@ -547,6 +618,30 @@ void Input::constructPrecedence()
                 else if(symbols.back() == ";")
                 {
                     cmd.push_back(new SemiColon(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == "<")
+                {
+                    cmd.push_back(new InputRedir(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == ">")
+                {
+                    cmd.push_back(new OutputRedir(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == ">>")
+                {
+                    cmd.push_back(new OutputAppend(lhs, rhs));
+                    symbols.pop_back();
+                    symbols.pop_back();
+                }
+                else if(symbols.back() == "|")
+                {
+                    cmd.push_back(new Pipe(lhs, rhs));
                     symbols.pop_back();
                     symbols.pop_back();
                 }
@@ -588,6 +683,50 @@ void Input::constructPrecedence()
 
             SemiColon* semiColon = new SemiColon(lhs, rhs);
             semiColon->execute(0, 1);
+        }
+        if(symbols.back() == "<") 
+        {
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+
+            Command* lhs = cmd.back();
+            cmd.pop_back();            
+
+            InputRedir* inred = new InputRedir(lhs, rhs);
+            inred->execute(0, 1);
+        }
+        if(symbols.back() == ">") 
+        {
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+
+            Command* lhs = cmd.back();
+            cmd.pop_back();            
+
+            OutputRedir* outred = new OutputRedir(lhs, rhs);
+            outred->execute(0, 1);
+        }
+        if(symbols.back() == ">>") 
+        {
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+
+            Command* lhs = cmd.back();
+            cmd.pop_back();            
+
+            OutputAppend* outapp = new OutputAppend(lhs, rhs);
+            outapp->execute(0, 1);
+        }
+        if(symbols.back() == "|") 
+        {
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+
+            Command* lhs = cmd.back();
+            cmd.pop_back();            
+
+            Pipe* pipe = new Pipe(lhs, rhs);
+            pipe->execute(0, 1);
         }
     }
     else
