@@ -426,8 +426,7 @@ void Input::constructPrecedence()
         {
             commands.push_back(tokens.at(i));
         }
-
-        if(tokens.at(i) == "||" || tokens.at(i) == "&&" || tokens.at(i) == ";"
+        else if(tokens.at(i) == "||" || tokens.at(i) == "&&" || tokens.at(i) == ";"
             || tokens.at(i) == "<" || tokens.at(i) == ">" || tokens.at(i) == "|"
             || tokens.at(i) == ">>")
         {
@@ -648,7 +647,7 @@ void Input::constructPrecedence()
             }
         }
     }
-
+    
     if(cmd.size() > 1)
     {
         if(symbols.back() == "||") 
@@ -731,6 +730,65 @@ void Input::constructPrecedence()
     }
     else
     {
+        if(commands.size() > 0)
+        {
+            Executable* exec;
+
+            if(commands[0] == "test")
+            {
+                exec = new test(commands);
+            }
+            else
+            {
+                exec = new Executable(commands);
+            }
+
+            cmd.push_back(exec);       
+            commands.clear();
+
+            Command* rhs = cmd.back();
+            cmd.pop_back();
+            
+            Command* lhs = cmd.back();
+            cmd.pop_back();
+                
+            if(symbols.back() == "&&")
+            {
+                cmd.push_back(new And(lhs, rhs));
+                symbols.pop_back();
+            }
+            else if(symbols.back() == "||")
+            {
+                cmd.push_back(new Or(lhs, rhs));
+                symbols.pop_back();
+            }
+            else if(symbols.back() == ";")
+            {
+                cmd.push_back(new SemiColon(lhs, rhs));
+                symbols.pop_back();
+            }
+            else if(symbols.back() == "<")
+            {
+                cmd.push_back(new InputRedir(lhs, rhs));
+                symbols.pop_back();
+            }
+            else if(symbols.back() == ">")
+            {
+                cmd.push_back(new OutputRedir(lhs, rhs));
+                symbols.pop_back();
+            }
+            else if(symbols.back() == ">>")
+            {
+                cmd.push_back(new OutputAppend(lhs, rhs));
+                symbols.pop_back();
+            }
+            else if(symbols.back() == "|")
+            {
+                cmd.push_back(new Pipe(lhs, rhs));
+                symbols.pop_back();
+            }
+        }
+        
         cmd.back()->execute(0, 1); 
     } 
 }
