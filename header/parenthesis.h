@@ -18,7 +18,7 @@ public:
 
     bool execute()
     {
-        root->execute();
+        root->execute(0, 0);
     } 
 
 private:

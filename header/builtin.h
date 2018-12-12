@@ -18,7 +18,11 @@ public:
     {}
     ~BuiltIn() {}
 
-    virtual bool execute() override {}
+    virtual bool execute(int fdin, int fdout) override {}
+    bool getFilePath(std::string& filepath) override
+    {
+        return false;
+    }
 };
 
 //==================================================
@@ -34,7 +38,7 @@ struct test
     {}
     ~test() {}
 
-    bool execute() override;
+    bool execute(int fdin, int fdout) override;
 };
 
 #endif

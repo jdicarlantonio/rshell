@@ -11,6 +11,10 @@ ADD_EXECUTABLE(rshell
     src/shell.cpp
     src/input.cpp
     src/builtin.cpp
+    src/pipe.cpp
+    src/inputredir.cpp
+    src/outputredir.cpp
+    src/outputappend.cpp
     src/main.cpp
 )
 
@@ -23,6 +27,10 @@ ADD_EXECUTABLE(test
     src/and.cpp
     src/or.cpp
     src/builtin.cpp
+    src/inputredir.cpp
+    src/outputredir.cpp
+    src/outputappend.cpp
+    src/pipe.cpp
 )
 
 TARGET_LINK_LIBRARIES(test gtest)

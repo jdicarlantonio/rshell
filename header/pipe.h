@@ -1,16 +1,15 @@
-#ifndef OR_H
-#define OR_H
+#ifndef PIPE_H
+#define PIPE_H
 
-// user include
 #include "connector.h"
 
-class Or
+class Pipe
     : public Connector
 {
 public:
-    Or();
-    Or(Command* left, Command* right);
-    ~Or();
+    Pipe();
+    Pipe(Command* lhs, Command* rhs);
+    ~Pipe();
 
     bool execute(int fdin, int fdout) override;
 };

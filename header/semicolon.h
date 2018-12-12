@@ -12,7 +12,7 @@ public:
     SemiColon(Command* left, Command* right);
     ~SemiColon();
 
-    bool execute() override;
+    bool execute(int fdin, int fdout) override;
 };
 
 #endif

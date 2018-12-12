@@ -17,7 +17,8 @@ public:
     Executable(StringVec args);
     ~Executable();
 
-    bool execute() override;
+    bool execute(int fdin, int fdout) override;
+    bool getFilePath(std::string& filepath) override;
 
 protected:
     StringVec argList; // this may end up being a char array

@@ -16,7 +16,11 @@ public:
     Connector(Command* left, Command* right);
     ~Connector();
 
-    bool execute() override;
+    bool execute(int fdin, int fdout) override;
+    bool getFilePath(std::string& filepath) override
+    {
+        return false;
+    }
 
 protected:
     std::string connectorValue;

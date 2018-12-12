@@ -11,7 +11,7 @@ Connector::Connector(Command* left, Command* right)
 Connector::~Connector()
 {}
 
-bool Connector::execute()
+bool Connector::execute(int fdin, int fdout)
 {
 
 }

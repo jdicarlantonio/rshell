@@ -12,7 +12,7 @@ public:
     And(Command* left, Command* right);
     ~And();
 
-    bool execute() override;
+    bool execute(int fdin, int fdout) override;
 };
 
 #endif

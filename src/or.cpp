@@ -11,7 +11,7 @@ Or::Or(Command* left, Command* right)
 Or::~Or()
 {}
 
-bool Or::execute()
+bool Or::execute(int fdin, int fdout)
 {
-    return (lhs->execute() || rhs->execute());
+    return (lhs->execute(fdin, fdout) || rhs->execute(fdin, fdout));
 }

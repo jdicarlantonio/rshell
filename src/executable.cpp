@@ -21,7 +21,7 @@ Executable::~Executable()
 // syscalls are going to go here
 // argList should contain the executable name (e.g. ls, cd, ...) first, followed
 // by the arguments and filename, why i decided to call is argList, i don't know.
-bool Executable::execute()
+bool Executable::execute(int fdin, int fdout)
 {
     bool successful = true;
     // keep track of child
@@ -46,6 +46,18 @@ bool Executable::execute()
             args.push_back(const_cast<char*>(token.c_str()));
         }
         args.push_back(NULL);
+        
+        // need to call dup2 here for each file descriptor
+        if(dup2(fdin, 0) == -1)
+        {
+            perror("dup error");
+            return false;
+        }
+        if(dup2(fdout, 1) == -1)
+        {
+            perror("dup error");
+            return false;
+        }
 
         // we can run execvp
         if(execvp(args[0], args.data()) == -1)
@@ -70,7 +82,6 @@ bool Executable::execute()
             perror("wait error");
             successful = false;
         }
-
     }
 
     int exitStatus = WEXITSTATUS(status);
@@ -80,4 +91,15 @@ bool Executable::execute()
     }
 
     return successful;
+}
+
+bool Executable::getFilePath(std::string& filepath)
+{
+    if(argList.size() > 1)
+    {
+        return false;
+    }
+    
+    filepath = argList[0];
+    return true;
 }

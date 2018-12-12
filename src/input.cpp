@@ -6,6 +6,10 @@
 #include "../header/builtin.h"
 #include "../header/command.h"
 #include "../header/parenthesis.h"
+#include "../header/pipe.h"
+#include "../header/outputredir.h"
+#include "../header/inputredir.h"
+#include "../header/outputappend.h"
 
 #include <iostream>
 #include <cstring>
@@ -74,7 +78,7 @@ bool Input::run()
         if(singleCommand)
         {
             // we should only have one executable object
-            executables[0]->execute();
+            executables[0]->execute(0, 1);
             singleCommand = false; 
         }
         else
@@ -89,7 +93,7 @@ bool Input::run()
                 initializeCommands();
                 
                 int numConnectors = connectors.size();
-                connectors[numConnectors - 1]->execute();
+                connectors[numConnectors - 1]->execute(0, 1);
             }
         }
 
@@ -196,6 +200,38 @@ void Input::tokenize(std::string input)
             
             argList.clear();
         }
+        if(tokens[i] == "|")
+        {
+            pushExecutable(argList);
+            connectorValues.push_back("|");
+            ++i;
+            
+            argList.clear();
+        }
+        if(tokens[i] == "<")
+        {
+            pushExecutable(argList);
+            connectorValues.push_back("<");
+            ++i;
+            
+            argList.clear();
+        }
+        if(tokens[i] == ">")
+        {
+            pushExecutable(argList);
+            connectorValues.push_back(">");
+            ++i;
+            
+            argList.clear();
+        }
+        if(tokens[i] == ">>")
+        {
+            pushExecutable(argList);
+            connectorValues.push_back(">>");
+            ++i;
+            
+            argList.clear();
+        }
         
         argList.push_back(tokens[i]);
     }
@@ -291,6 +327,30 @@ void Input::initializeCommands()
             new And(executables[0], executables[1])
         );
     }  
+    if(connectorValues[0] == "|")
+    {
+        connectors.push_back(
+            new Pipe(executables[0], executables[1])
+        );
+    }
+    if(connectorValues[0] == "<")
+    {
+        connectors.push_back(
+            new InputRedir(executables[0], executables[1])
+        );
+    }
+    if(connectorValues[0] == ">")
+    {
+        connectors.push_back(
+            new OutputRedir(executables[0], executables[1])
+        );
+    }
+    if(connectorValues[0] == ">>")
+    {
+        connectors.push_back(
+            new OutputAppend(executables[0], executables[1])
+        );
+    }
     
     // need to initialize a counter for the connectorvalues vector
     int j = 1;
@@ -482,7 +542,7 @@ void Input::constructPrecedence()
             cmd.pop_back();            
 
             Or* orExec = new Or(lhs, rhs);
-            orExec->execute();
+            orExec->execute(0, 1);
         }
         if(symbols.back() == "&&") 
         {
@@ -493,7 +553,7 @@ void Input::constructPrecedence()
             cmd.pop_back();            
 
             And* andExec = new And(lhs, rhs);
-            andExec->execute();
+            andExec->execute(0, 1);
         }
         if(symbols.back() == ";") 
         {
@@ -504,11 +564,11 @@ void Input::constructPrecedence()
             cmd.pop_back();            
 
             SemiColon* semiColon = new SemiColon(lhs, rhs);
-            semiColon->execute();
+            semiColon->execute(0, 1);
         }
     }
     else
     {
-        cmd.back()->execute(); 
+        cmd.back()->execute(0, 1); 
     } 
 }

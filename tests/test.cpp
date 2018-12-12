@@ -101,8 +101,8 @@ TEST(ExecutableTest, lsTest)
     Executable* multipleArgs = new Executable(commandMultipleArgs); 
     Executable* oneArg = new Executable(commandOneArg); 
 
-    EXPECT_EQ(true, multipleArgs->execute());
-    EXPECT_EQ(true, oneArg->execute());
+    EXPECT_EQ(true, multipleArgs->execute(0, 0));
+    EXPECT_EQ(true, oneArg->execute(0, 0));
 
     delete multipleArgs;
     delete oneArg;
@@ -124,8 +124,8 @@ TEST(ExecutableTest, FileManip)
     Executable* mkdirExec = new Executable(mkdirCommand);
     Executable* rmExec = new Executable(rmRecursive);
 
-    EXPECT_EQ(true, mkdirExec->execute());
-    EXPECT_EQ(true, rmExec->execute());
+    EXPECT_EQ(true, mkdirExec->execute(0, 0));
+    EXPECT_EQ(true, rmExec->execute(0, 0));
 
     delete mkdirExec;
     delete rmExec;
@@ -145,7 +145,7 @@ TEST(ConnectorTest, OneConnector)
 
     Connector* semicolon = new SemiColon(lsExec, mkdirExec);
 
-    EXPECT_EQ(true, semicolon->execute());
+    EXPECT_EQ(true, semicolon->execute(0, 0));
 
     delete lsExec;
     delete mkdirExec;
@@ -182,7 +182,7 @@ TEST(RecursiveTest, MultipleConnectors)
     
     Connector* orCon = new Or(andCon, echoWorldExec);
 
-    EXPECT_EQ(true, orCon->execute());
+    EXPECT_EQ(true, orCon->execute(0, 0));
 
     delete lsExec;
     delete semicolon;
@@ -202,7 +202,7 @@ TEST(BuiltInTest, TestCommandTrue)
 
     Executable* testTest = new test(testCmd);
 
-    EXPECT_EQ(false, testTest->execute());
+    EXPECT_EQ(false, testTest->execute(0, 0));
 
     delete testTest;
 }
@@ -216,7 +216,7 @@ TEST(BuiltInTest, TestCommandFalse)
 
     Executable* testTest = new test(testCmd);
 
-    EXPECT_EQ(true, testTest->execute());
+    EXPECT_EQ(true, testTest->execute(0, 0));
 
     delete testTest;
 }
@@ -241,9 +241,9 @@ TEST(BuiltInTest, TestCommandArguments)
     testCmd2.push_back("Makefile");
     Executable* fTest = new test(testCmd3);
 
-    EXPECT_EQ(true, eTest->execute());
-    EXPECT_EQ(true, dTest->execute());
-    EXPECT_EQ(false, fTest->execute());
+    EXPECT_EQ(true, eTest->execute(0, 0));
+    EXPECT_EQ(true, dTest->execute(0, 0));
+    EXPECT_EQ(false, fTest->execute(0, 0));
 }
 
 TEST(BuiltInTest, SymbolicTestCommand)
@@ -255,7 +255,7 @@ TEST(BuiltInTest, SymbolicTestCommand)
 
     Executable* tester = new test(symTest);
    
-    EXPECT_EQ(false, tester->execute());
+    EXPECT_EQ(false, tester->execute(0, 0));
 }
 
 TEST(BuiltInTest, SymbolicTestCommandOnFile)
@@ -268,7 +268,7 @@ TEST(BuiltInTest, SymbolicTestCommandOnFile)
 
     Executable* tester = new test(symTest);
    
-    EXPECT_EQ(true, tester->execute());
+    EXPECT_EQ(true, tester->execute(0, 0));
 }
 
 int main(int argc, char **argv) 

@@ -11,8 +11,8 @@ SemiColon::SemiColon(Command* left, Command* right)
 SemiColon::~SemiColon()
 {}
 
-bool SemiColon::execute()
+bool SemiColon::execute(int fdin, int fdout)
 {
-    lhs->execute();
-    return rhs->execute();
+    lhs->execute(fdin, fdout);
+    return rhs->execute(fdin, fdout);
 }

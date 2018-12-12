@@ -17,7 +17,7 @@
 // test functions                         =
 //=========================================
 
-bool test::execute()
+bool test::execute(int fdin, int fdout)
 {
     // get argument and pathname
     // if no argument specified, default to -e
