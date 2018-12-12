@@ -21,7 +21,7 @@ bool OutputAppend::execute(int fdin, int fdout)
     std::string filepath;
     if(!rhs->getFilePath(filepath))
     {
-        std::cout << "expected file\n";
+        std::cout << "Redirection error: expected file\n";
         return false;
     }
 

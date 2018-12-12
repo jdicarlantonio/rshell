@@ -21,11 +21,11 @@ bool InputRedir::execute(int fdin, int fdout)
     std::string filepath;
     if(!rhs->getFilePath(filepath))     
     {
-        std::cout << "expected file\n";
+        std::cout << "Redirection error: expected file\n";
         return false;
     }
 
     fdin = open(filepath.c_str(), O_RDONLY);
 
-    return lhs->execute(fdin, 1);
+    return lhs->execute(fdin, fdout);
 }

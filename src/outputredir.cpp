@@ -22,7 +22,7 @@ bool OutputRedir::execute(int fdin, int fdout)
     std::string filepath;
     if(!rhs->getFilePath(filepath))
     {
-        std::cout << "expected file\n";
+        std::cout << "Redirection error: expected file\n";
         return false;
     }
 
@@ -32,5 +32,5 @@ bool OutputRedir::execute(int fdin, int fdout)
         S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR
     );
 
-    return lhs->execute(0, fdout);
+    return lhs->execute(fdin, fdout);
 }

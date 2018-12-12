@@ -130,7 +130,6 @@ void Input::tokenize(std::string input)
         }
 
         tokens.push_back(tokenTemp);
-
         // check for brackets, and if its an open bracket switch with "test"
         // remove close bracket
         if(tokenTemp == "[")
@@ -378,6 +377,30 @@ void Input::initializeCommands()
                 new And(connectors[j - 1], executables[i])
             );
         }  
+        if(connectorValues[j] == "|")
+        {
+            connectors.push_back(
+                new Pipe(connectors[j - 1], executables[i])
+            );
+        }
+        if(connectorValues[j] == "<")
+        {
+            connectors.push_back(
+                new InputRedir(connectors[j - 1], executables[i])
+            );
+        }
+        if(connectorValues[j] == ">")
+        {
+            connectors.push_back(
+                new OutputRedir(connectors[j - 1], executables[i])
+            );
+        }
+        if(connectorValues[j] == ">>")
+        {
+            connectors.push_back(
+                new OutputAppend(connectors[j - 1], executables[i])
+            );
+        }
         
         ++j;
     }
