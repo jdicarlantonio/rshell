@@ -7,6 +7,10 @@
 #include "../header/semicolon.h"
 #include "../header/input.h"
 #include "../header/builtin.h"
+#include "../header/pipe.h"
+#include "../header/inputredir.h"
+#include "../header/outputredir.h"
+#include "../header/outputappend.h"
 
 #include <vector>
 #include <string>
@@ -269,6 +273,134 @@ TEST(BuiltInTest, SymbolicTestCommandOnFile)
     Executable* tester = new test(symTest);
    
     EXPECT_EQ(true, tester->execute(0, 0));
+}
+
+TEST(PipeTest, SinglePipe)
+{
+    std::vector<std::string> cmd1;
+    cmd1.push_back("ls");
+    cmd1.push_back("-la");
+
+    Executable* exec1 = new Executable(cmd1);
+
+    std::vector<std::string> cmd2;
+    cmd2.push_back("cat");
+
+    Executable* exec2 = new Executable(cmd2);
+
+    Pipe* pipe = new Pipe(exec1, exec2);
+
+    EXPECT_EQ(true, pipe->execute(0, 1));
+}
+
+TEST(PipeTest, MultiplePipe)
+{
+    std::vector<std::string> cmd1;
+    cmd1.push_back("ls");
+
+    std::vector<std::string> cmd2;
+    cmd2.push_back("cat");
+
+    Executable* exec1 = new Executable(cmd1);
+    Executable* exec2 = new Executable(cmd2);
+
+    Pipe* pipe1 = new Pipe(exec1, exec2);
+
+    std::vector<std::string> cmd3;
+    cmd3.push_back("sort");
+
+    Pipe* pipe2 = new Pipe(pipe1, new Executable(cmd3));
+
+    std::vector<std::string> cmd4;
+    cmd4.push_back("less");
+        
+    Pipe* pipe3 = new Pipe(pipe2, new Executable(cmd4));
+
+    EXPECT_EQ(true, pipe3->execute(0, 1));
+}
+
+TEST(RedirectionTest, OutputRedirection)
+{
+    std::vector<std::string> touch;
+    touch.push_back("touch");
+    touch.push_back("testfile1");
+
+    Executable* touchExec = new Executable(touch);
+    touchExec->execute(0, 1);
+
+    std::vector<std::string> cmd1;
+    cmd1.push_back("echo");
+    cmd1.push_back("this is a testfile");
+
+    Executable* exec1 = new Executable(cmd1);
+
+    std::vector<std::string> cmd2;
+    cmd2.push_back("testfile1");
+    
+    Executable* exec2 = new Executable(cmd2);
+
+    OutputRedir* ored = new OutputRedir(exec1, exec2);
+
+    EXPECT_EQ(true, ored->execute(0, 1));
+}
+
+TEST(RedirectionTest, MultipleOutRedirection)
+{
+    std::vector<std::string> cmd1;
+    cmd1.push_back("cat");
+    cmd1.push_back("testfile1");
+
+    Executable* exec1 = new Executable(cmd1);
+
+    std::vector<std::string> cmd3;
+    cmd3.push_back("testfile2");
+    
+    Executable* exec3 = new Executable(cmd3);
+    OutputRedir* ored = new OutputRedir(exec1, exec3);
+    
+    std::vector<std::string> cmd4;
+    cmd4.push_back("testfile3");
+    
+    Executable* exec4 = new Executable(cmd4);
+
+    OutputRedir* ored2 = new OutputRedir(ored, exec4);
+
+    EXPECT_EQ(true, ored2->execute(0, 1));
+}
+
+TEST(RedirectionTest, OutputAppend)
+{
+    std::vector<std::string> cmd1;
+    cmd1.push_back("echo");
+    cmd1.push_back("this is a testfile");
+
+    Executable* exec1 = new Executable(cmd1);
+
+    std::vector<std::string> cmd2;
+    cmd2.push_back("testfile1");
+    
+    Executable* exec2 = new Executable(cmd2);
+
+    OutputAppend* oapp = new OutputAppend(exec1, exec2);
+
+    EXPECT_EQ(true, oapp->execute(0, 1));
+}
+
+TEST(RedirectionTest, InputRedirection)
+{
+    std::vector<std::string> cmd1;
+    cmd1.push_back("cat");
+
+    Executable* exec1 = new Executable(cmd1);
+
+    std::vector<std::string> cmd2;
+    cmd2.push_back("testfile1");
+
+    Executable* exec2 = new Executable(cmd2);
+
+    InputRedir* ired = new InputRedir(exec1, exec2);
+
+    EXPECT_EQ(true, ired->execute(0, 1));
 }
 
 int main(int argc, char **argv) 

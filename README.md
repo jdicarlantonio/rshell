@@ -21,6 +21,8 @@ git submodule update
 ```
 
 ## Known Bugs
+* Using output redirection sequentially on files, IE, `cat file_1 > file_2 > ... > file_n` will get the contents of the first file into the second instead of the last
+* Using pipes and redirection with `&&`, `||`, and `;` uses left to right precedence instead of executing pipe and redirection first 
 * Entering semicolons with a space before will not work, I.E. `ls -la ; mkdir temp` will not execute properly
 * Connectors expect a left hand command and a right hand command. If you try to put a command such as `ls -l &&` it will execute the first command and show an error.
 * Beginning a command with '&&' does not return an error as it should, but the commands after work as if it was never there

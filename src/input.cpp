@@ -85,8 +85,14 @@ bool Input::run()
         {
             if(precedence)
             {
-                constructPrecedence();
-//                connectors.back()->execute();
+                if(!emptyParen)
+                {
+                    constructPrecedence();
+                }
+                else
+                {
+                    std::cout << "Error: expected ')'\n";
+                }
             }
             else
             {
@@ -163,7 +169,7 @@ void Input::tokenize(std::string input)
     {
         return;
     }
-    
+   
     // seperate commands and arguments from connectors
     StringVec argList;
     for(int i = 0; i < tokens.size(); ++i)    
@@ -235,6 +241,16 @@ void Input::tokenize(std::string input)
         argList.push_back(tokens[i]);
     }
 
+    // check for empty parenthesis
+    for(int i = 0; i < tokens.size() - 1; ++i)
+    {
+        if(tokens[i] == "(" && tokens[i + 1] == ")") 
+        {
+            emptyParen = true;
+            return; // just return and continue
+        }
+    }
+ 
     pushExecutable(argList);
 //    executables.push_back(new Executable(argList));
  

@@ -36,6 +36,7 @@ private:
 
     bool singleCommand;
     bool precedence = false;
+    bool emptyParen = false;
     
     std::vector<Connector*> connectors;
     std::vector<Executable*> executables;
