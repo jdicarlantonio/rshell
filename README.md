@@ -2,7 +2,7 @@
 A very basic BASH shell implementation. Written in C++ using the composite design pattern.
 
 ## Overview
-In this shell, you can enter any commands that are in your path. I.E. `ls -la`, `mkdir tempdir`, etc, and it contains the `test` command as a built in. It runs in your terminal emulator and can be exited by typing in the `exit` command (see bugs). Now functional with `|`, `<`, `>`, and `>>`.
+In this shell, you can enter any commands that are in your path. I.E. `ls -la`, `mkdir tempdir`, etc, and it contains the `test` command as a built in. It runs in your terminal emulator and can be exited by typing in the `exit` command (see bugs). Now functional with `|`, `<`, `>`, and `>>` (see bugs).
 
 ## Installation
 ```
