@@ -12,8 +12,6 @@ cmake3 .
 make
 ./rshell
 ```
-**NOTE:** `cmake3` is needed for the hammer server.
-
 To get googletest, run the following before building
 ```
 git submodule init
