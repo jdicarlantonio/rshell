@@ -6,8 +6,8 @@ In this shell, you can enter any commands that are in your path. I.E. `ls -la`, 
 
 ## Installation
 ```
-git clone --recursive https://github.com/cs100/assignment-1-lost.git
-cd assignment-1-lost
+git clone --recursive https://github.com/jdicarlantonio/rshell
+cd rshell
 cmake3 .
 make
 ./rshell
